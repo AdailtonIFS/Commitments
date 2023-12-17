@@ -19,18 +19,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
 public class Opening extends JFrame {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 
 	private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
 	private static Opening frame;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

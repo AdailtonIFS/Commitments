@@ -1,9 +1,8 @@
-create table commitments (
-
-	Name varchar(40) not null,
-	Local varchar(40) not null,
-	DateStart char(10) not null,
-	DateEnd	char(10) not null,
-	Description varchar(60) not null,
-
+CREATE TABLE commitments (
+	id SERIAL, 
+	name VARCHAR(40) NOT NULL,
+	local VARCHAR(40) NOT NULL,
+	date_start DATE NOT NULL,
+	date_end DATE NOT NULL,
+	description VARCHAR(60) NOT NULL
 );

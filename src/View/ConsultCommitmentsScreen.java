@@ -2,7 +2,6 @@ package View;
 
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -13,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import com.toedter.calendar.JDateChooser;
 
 import commitments.Commitments;
 
@@ -34,30 +34,8 @@ public class ConsultCommitmentsScreen extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtName;
 	private JTextField txtLocal;
-	private JTextField txtDateStart;
-	private JTextField txtEnd;
-	private JTextField txtCode;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ConsultCommitmentsScreen frame = new ConsultCommitmentsScreen();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public ConsultCommitmentsScreen() {
+	public ConsultCommitmentsScreen(Long id) throws SQLException {
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MainCommitmentsScreen.class.getResource("/images/pagina-inicial.png")));
 		setTitle("Consult Commitments");
@@ -71,6 +49,7 @@ public class ConsultCommitmentsScreen extends JFrame {
 		} catch(IOException | FontFormatException e){
 			
 		}
+
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 800, 500);
 		setResizable(false);
@@ -86,7 +65,6 @@ public class ConsultCommitmentsScreen extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 
-		
 		JLabel lblSearch = new JLabel("Consulting");
 		lblSearch.setBackground(Color.WHITE);
 		lblSearch.setHorizontalAlignment(SwingConstants.CENTER);
@@ -101,11 +79,9 @@ public class ConsultCommitmentsScreen extends JFrame {
 		
 		txtName = new JTextField();
 		txtName.setBorder(new LineBorder(Color.BLACK, 1, true));
-		txtName.setEditable(false);
 		txtName.setBounds(61, 124, 178, 22);
 		contentPane.add(txtName);
 		txtName.setColumns(10);
-		
 		
 		JLabel lblNome = new JLabel("NAME:");
 		lblNome.setHorizontalAlignment(SwingConstants.CENTER);
@@ -121,7 +97,6 @@ public class ConsultCommitmentsScreen extends JFrame {
 		
 		txtLocal = new JTextField();
 		txtLocal.setBorder(new LineBorder(Color.BLACK, 1, true));
-		txtLocal.setEditable(false);
 		txtLocal.setColumns(10);
 		txtLocal.setBounds(61, 193, 178, 22);
 		contentPane.add(txtLocal);
@@ -132,10 +107,8 @@ public class ConsultCommitmentsScreen extends JFrame {
 		lblInicio.setBounds(61, 288, 178, 22);
 		contentPane.add(lblInicio);
 		
-		txtDateStart = new JTextField();
+		JDateChooser txtDateStart = new JDateChooser();
 		txtDateStart.setBorder(new LineBorder(Color.BLACK, 1, true));
-		txtDateStart.setEditable(false);
-		txtDateStart.setColumns(10);
 		txtDateStart.setBounds(61, 319, 178, 22);
 		contentPane.add(txtDateStart);
 		
@@ -145,28 +118,12 @@ public class ConsultCommitmentsScreen extends JFrame {
 		lblFinal.setBounds(61, 349, 178, 22);
 		contentPane.add(lblFinal);
 		
-		txtEnd = new JTextField();
+		JDateChooser txtEnd = new JDateChooser();
 		txtEnd.setBorder(new LineBorder(Color.BLACK, 1, true));
-		txtEnd.setEditable(false);
-		txtEnd.setColumns(10);
 		txtEnd.setBounds(61, 379, 178, 22);
 		contentPane.add(txtEnd);
-		
-		txtCode = new JTextField();
-		txtCode.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		txtCode.setEditable(false);
-		txtCode.setColumns(10);
-		txtCode.setBounds(61, 258, 178, 22);
-		contentPane.add(txtCode);
-		
-		JLabel lblCode = new JLabel("CODE:");
-		lblCode.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCode.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
-		lblCode.setBounds(61, 227, 178, 22);
-		contentPane.add(lblCode);
-		
+				
 		TextArea taDescription = new TextArea();
-		taDescription.setEditable(false);
 		taDescription.setBounds(314, 129, 338, 200);
 		contentPane.add(taDescription);
 		
@@ -176,43 +133,50 @@ public class ConsultCommitmentsScreen extends JFrame {
 		lblDescription.setBounds(314, 102, 338, 22);
 		contentPane.add(lblDescription);
 
-		ArrayList<String> valores = new ArrayList<String>();
-		String tabela = "Commitments";
 
+		Commitments commitment = new Commitments().getById(id);
+	
+		txtName.setText(commitment.getName());
+		txtLocal.setText(commitment.getDescription());
+		txtDateStart.setDate(commitment.getDateStart());
+		txtEnd.setDate(commitment.getDateEnd());
+		taDescription.setText(commitment.getDescription());
 		
-		try {
-			valores.addAll(Commitments.searchCommitments(tabela));
-		
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(int i = 0; i<valores.size();i++) {
-			
-			if(SearchCommitmentsScreen.code.equalsIgnoreCase(valores.get(i))) {
-				txtName.setText(valores.get(i-5));
-				txtLocal.setText(valores.get(i-4));
-				txtDateStart.setText(valores.get(i-3));
-				txtEnd.setText(valores.get(i-2));
-				txtCode.setText(valores.get(i));
-				taDescription.setText(valores.get(i-1));
-				break;
-				//PERGUNTAR A DAHAN;
-				}
-			}
-		
-
-		
-		Button button = new Button("VOLTAR");
+		Button button = new Button("SALVAR");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				Commitments commitment = new Commitments();
+				commitment.setId(id);
+				commitment.setName(txtName.getText().trim());
+				commitment.setLocal(txtLocal.getText().trim());
+				commitment.setDateStart(txtDateStart.getDate());
+				commitment.setDateEnd(txtEnd.getDate());
+				commitment.setDescription(taDescription.getText().trim());
+
+				try {
+                    commitment.updateCommitments(commitment);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
 			}
 		});
-		button.setBounds(487, 358, 79, 24);
+		button.setBounds(400, 358, 79, 24);
 		contentPane.add(button);
-	
-		
+
+		Button delete = new Button("DELETAR");
+		delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    commitment.deleteCommitments(id);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }			
+			}
+		});
+		delete.setBackground(Color.RED);
+		delete.setBounds(487, 358, 79, 24);
+		delete.setFont(new Font("Arial", Font.BOLD, 14));
+		delete.setForeground(Color.WHITE);
+		contentPane.add(delete);
 	}
 }

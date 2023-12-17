@@ -1,5 +1,6 @@
 package commitments;
 
+import java.util.List;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,16 +9,26 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import DataBase.DbException;
+
 public class Commitments {
 
+	private Long id;
 	private String Name;
 	private String Local;
-	private String DateStart;
-	private String DateEnd;
+	private Date DateStart;
+	private Date DateEnd;
 	private String Description;
-	private String Codigo;
+	private String table = "commitments";
 	
 	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return Name;
 	}
@@ -30,16 +41,16 @@ public class Commitments {
 	public void setLocal(String local) {
 		Local = local;
 	}
-	public String getDateStart() {
+	public Date getDateStart() {
 		return DateStart;
 	}
-	public void setDateStart(String dateStart) {
+	public void setDateStart(Date dateStart) {
 		DateStart = dateStart;
 	}
-	public String getDateEnd() {
+	public Date getDateEnd() {
 		return DateEnd;
 	}
-	public void setDateEnd(String dateEnd) {
+	public void setDateEnd(Date dateEnd) {
 		DateEnd = dateEnd;
 	}
 	public String getDescription() {
@@ -48,26 +59,15 @@ public class Commitments {
 	public void setDescription(String description) {
 		Description = description;
 	}
-	
-	
-	
-	public String getCodigo() {
-		return Codigo;
-	}
-	public void setCodigo(String codigo) {
-		Codigo = codigo;
-	}
-	public Commitments(String name, String local, String dateStart, String dateEnd, String description, String codigo) {
-		super();
+
+	public Commitments(String name, String local, Date dateStart, Date dateEnd, String description) {
 		this.setName(name);
 		this.setLocal(local);
 		this.setDateStart(dateStart);
 		this.setDateEnd(dateEnd);
 		this.setDescription(description);		
-		this.setCodigo(codigo);
 	}
 	public Commitments() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	/*O METODO registerCommitments
@@ -76,19 +76,19 @@ public class Commitments {
 	 * BANCO DE DADOS
 	 */
 	
-	public void registerCommitments(String tabela, ArrayList <String> valores) throws SQLException {
+	public void registerCommitments(Commitments commitments) throws SQLException {
 		Connection conn = DataBase.DB.getConnection();
-		String sql;
 		Statement statement = conn.createStatement();
 
-		sql = String.format("insert into %s values (", tabela);
+		String sql;
 
-		for (String valor : valores) {
-			sql += "'" + valor + "',";
-		}
-
-		sql = sql.substring(0, sql.length() - 1) + ")";
-
+		sql = String.format("INSERT INTO %s (name, local, date_start, date_end, description) VALUES (", this.table);
+		sql += "'" + commitments.getName() + "',";
+		sql += "'" + commitments.getLocal() + "',";
+		sql += "'" + commitments.getDateStart() + "',";
+		sql += "'" + commitments.getDateEnd() + "',";
+		sql += "'" + commitments.getDescription() + "')";
+		
 		statement.executeUpdate(sql);
 		statement.close();
 	
@@ -96,48 +96,74 @@ public class Commitments {
 	
 	
 	/*O METODO searchCommitments
-	 * SERVE PARA BUSCAR INFORMAÇÕES
+	 * SERVE PARA BUSCAR INFORMAï¿½ï¿½ES
 	 * SOBRE UM COMPROMISSO
 	 * NO BANCO DE DADOS
 	 */
 
-	public static ArrayList<String> searchCommitments(String tabela) throws SQLException {
-	Connection conn = DataBase.DB.getConnection();
-	Statement statement = conn.createStatement();
-	ArrayList<String> valores = new ArrayList <String> ();
-
-	ResultSet rs = statement.executeQuery("select * from "+tabela);
-	
-	while(rs.next()) {
-		valores.add(rs.getString("name"));
-		valores.add(rs.getString("local"));
-		valores.add(rs.getString("datestart"));
-		valores.add(rs.getString("dateend"));
-		valores.add(rs.getString("description"));
-		valores.add(rs.getString("code"));
+	public List<Commitments> searchCommitments() throws SQLException {
+		Connection conn = DataBase.DB.getConnection();
+		Statement statement = conn.createStatement();
+		
+		ArrayList<Commitments> commitments = new ArrayList <Commitments> ();
+			
+		ResultSet rs = statement.executeQuery("SELECT * FROM " + this.table);
+		
+		while(rs.next()) {
+			Commitments commitment = new Commitments();
+			commitment.setId(Long.valueOf(rs.getString("id")));
+			commitment.setName(rs.getString("name"));
+			commitment.setLocal(rs.getString("local"));
+			commitment.setDateStart(rs.getDate("date_start"));
+			commitment.setDateEnd(rs.getDate("date_end"));
+			commitment.setDescription(rs.getString("description"));
+			commitments.add(commitment);
+		}
+		
+		return commitments;
 	}
+
+	public Commitments getById(Long id) throws SQLException{
+		Connection conn = DataBase.DB.getConnection();
+		Statement statement = conn.createStatement();
+		ResultSet rs = statement.executeQuery("SELECT * FROM " + this.table + " WHERE id = " + id);
+		
+		Commitments commitment = new Commitments();
+		
+		if (!rs.next()) {
+			throw new DbException("Commitment nÃ£o encontrado;");
+		}
+		
+		commitment.setName(rs.getString("name"));
+		commitment.setLocal(rs.getString("local"));
+		commitment.setDateStart(rs.getDate("date_start"));
+		commitment.setDateEnd(rs.getDate("date_end"));
+		commitment.setDescription(rs.getString("description"));
 	
-	return valores;
-	
-	}//searchCommitments final;
-	
-	public static void deleteCommitments(String tabela, String codigo) throws SQLException {
+		return commitment;
+	}
+
+	public void deleteCommitments(Long id) throws SQLException {
 		
 		Connection conn = DataBase.DB.getConnection();
-		String sql;
-	
 		Statement statement = conn.createStatement();
-		sql = "delete from  "+ tabela+" where code = '"+codigo+"'";
+
+		String sql = "DELETE FROM "+ this.table + " WHERE id = " + id;
 		statement.executeUpdate(sql);
 		statement.close();
 	}
-	public static void updateCommitments(String tabela, String atributo, String NewAtributo,String codigo) throws SQLException {
+	public void updateCommitments(Commitments commitments) throws SQLException {
 		
 		Connection conn = DataBase.DB.getConnection();
-		String sql;
 	
 		Statement statement = conn.createStatement();
-		sql ="update "+tabela+" set "+atributo+" = '"+NewAtributo+"' where code = '"+codigo+"'";
+		String sql ="UPDATE " + this.table + " SET " 
+									+ "name ='" + commitments.getName() + "', "
+									+ "local = '" + commitments.getLocal() + "', "
+									+ "date_start = '" + commitments.getDateStart() + "', "
+									+ "date_end = '" + commitments.getDateEnd() + "', "
+									+ "description = '" + commitments.getDescription() + "'"
+									+ "WHERE id = "+ commitments.getId() +";" ;
 		statement.executeUpdate(sql);
 		statement.close();
 	}

@@ -14,8 +14,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,35 +31,11 @@ import com.toedter.calendar.JDateChooser;
 import commitments.Commitments;
 
 public class RegisterCommitmentsScreen extends JFrame {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtName;
 	private JTextField txtLocal;
-	private JTextField txtCode;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RegisterCommitmentsScreen frame = new RegisterCommitmentsScreen();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public RegisterCommitmentsScreen() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegisterCommitmentsScreen.class.getResource("/images/dominio.png")));
 
@@ -191,31 +165,16 @@ public class RegisterCommitmentsScreen extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Commitments Comm = new Commitments();
 				
-				if(!txtName.getText().isEmpty() && !txtLocal.getText().isEmpty() && Start != null && End != null && !txtCode.getText().isEmpty()) {
+				if(!txtName.getText().isEmpty() && !txtLocal.getText().isEmpty() && Start != null && End != null) {
 					Comm.setName(txtName.getText());
 					Comm.setLocal(txtLocal.getText());
-				
-					SimpleDateFormat out = new SimpleDateFormat("dd/MM/yyyy");
-					String result = out.format(Start.getDate());
-					Comm.setDateStart(result);
-					String result2 = out.format(End.getDate());
-					Comm.setDateEnd(result2);
+					Comm.setDateStart(Start.getDate());
+					Comm.setDateEnd(End.getDate());
 					Comm.setDescription(taDescription.getText());
-					Comm.setCodigo(txtCode.getText());
-					
-					ArrayList<String> valores = new ArrayList<String>();
-					String tabela = "Commitments";
-					
-					valores.add(txtName.getText());
-					valores.add(txtLocal.getText());
-					valores.add(result);
-					valores.add(result2);
-					valores.add(taDescription.getText());
-					valores.add(txtCode.getText());
 					
 					
 					try {
-						Comm.registerCommitments(tabela, valores);
+						Comm.registerCommitments(Comm);
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -231,19 +190,7 @@ public class RegisterCommitmentsScreen extends JFrame {
 			
 			}
 		});
-		
-		JLabel lblCode = new JLabel("CODE:");
-		lblCode.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCode.setForeground(Color.WHITE);
-		lblCode.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
-		lblCode.setBounds(61, 227, 178, 22);
-		contentPane.add(lblCode);
-		
-		txtCode = new JTextField();
-		txtCode.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		txtCode.setBounds(61, 258, 178, 22);
-		contentPane.add(txtCode);
-		txtCode.setColumns(10);
+	
 		
 		JLabel label = new JLabel("");
 		label.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));

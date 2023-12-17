@@ -39,25 +39,6 @@ public class MainCommitmentsScreen extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtDate;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainCommitmentsScreen frame = new MainCommitmentsScreen();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public MainCommitmentsScreen() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MainCommitmentsScreen.class.getResource("/images/pagina-inicial.png")));
 		
@@ -158,96 +139,8 @@ public class MainCommitmentsScreen extends JFrame {
 				}
 			}
 		});
-		
-		
-		//=====================================================================================================
-			
-		//======================================================================================================
-		//=============================================buttonAlter==============================================
-				
-		JButton btnAlter = new JButton("Alter");
-		btnAlter.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		btnAlter.setIcon(new ImageIcon(MainCommitmentsScreen.class.getResource("/images/sticky.png")));
-		btnAlter.setBounds(421, 177, 130, 130);
-		contentPane.add(btnAlter);
-		
-		btnAlter.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				btnAlter.setBorder(new LineBorder(new Color(0, 204, 255), 2));
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-				btnAlter.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-
-			}
-		});
-	
-		btnAlter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int contarDados = Commitments.countRegisters();
-					if(contarDados == 0) {
-						JOptionPane.showMessageDialog(null, "No commitments registered","Warning",2);
-				}
-					else {
-						try {
-							Consult_for_AlterScreen frame = new Consult_for_AlterScreen();
-							frame.setVisible(true);
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						}					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		
 		//=====================================================================================================
 
-		
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		btnDelete.setIcon(new ImageIcon(MainCommitmentsScreen.class.getResource("/images/trash.png")));
-		btnDelete.setBounds(609, 177, 130, 130);
-		contentPane.add(btnDelete);
-		
-		btnDelete.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				btnDelete.setBorder(new LineBorder(new Color(0, 204, 255), 2));
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-				btnDelete.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-
-			}
-		});
-		
-		btnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					int contarDados = Commitments.countRegisters();
-					if(contarDados == 0) {
-						JOptionPane.showMessageDialog(null, "No commitments registered","Warning",2);
-				}
-					else {
-					DeleteCommitmentsScreen frame = new DeleteCommitmentsScreen();
-					frame.setVisible(true);
-					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-	
-		//=====================================================================================================
-
-		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.BLACK);
 		separator.setBounds(23, 347, 736, 23);
@@ -259,17 +152,8 @@ public class MainCommitmentsScreen extends JFrame {
 		separator_1.setBounds(199, 177, 17, 130);
 		contentPane.add(separator_1);
 		
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setForeground(Color.BLACK);
-		separator_2.setOrientation(SwingConstants.VERTICAL);
-		separator_2.setBounds(390, 177, 6, 130);
-		contentPane.add(separator_2);
 		
-		JSeparator separator_3 = new JSeparator();
-		separator_3.setForeground(Color.BLACK);
-		separator_3.setOrientation(SwingConstants.VERTICAL);
-		separator_3.setBounds(580, 177, 6, 130);
-		contentPane.add(separator_3);
+
 		
 		JSeparator separator_4 = new JSeparator();
 		separator_4.setForeground(Color.BLACK);
@@ -313,7 +197,7 @@ public class MainCommitmentsScreen extends JFrame {
 		lblHour.setBounds(0, 0, 244, 22);
 		panel_2.add(lblHour);
 		
-		 Thread th = new Thread(new Runnable() { //cria uma thread
+		Thread th = new Thread(new Runnable() { //cria uma thread
 		        public void run() {
 		            while(true) { //roda indefinidamente
 		                Date data = Calendar.getInstance().getTime();
@@ -322,11 +206,12 @@ public class MainCommitmentsScreen extends JFrame {
 		                try {
 		                    Thread.sleep(1000); //espera 1 segundo para fazer a nova evolu��o
 		                } catch(InterruptedException ex){
-		                }
-		            }
-		        }
-		    }); th.start();
-		
+						}
+					}
+				}
+			}
+		); 
+		th.start();
 		
 		JLabel label = new JLabel("");
 		label.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));

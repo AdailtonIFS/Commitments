@@ -24,34 +24,9 @@ import javax.swing.border.EmptyBorder;
 import commitments.Commitments;
 
 public class SearchCommitmentsScreen extends JFrame {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	public static String code;
 
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SearchCommitmentsScreen frame = new SearchCommitmentsScreen();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public SearchCommitmentsScreen() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchCommitmentsScreen.class.getResource("/images/seo.png")));
 		setTitle("Search Commitments");
@@ -94,10 +69,12 @@ public class SearchCommitmentsScreen extends JFrame {
 		panel_1.setBounds(0, 412, 794, 53);
 		contentPane.add(panel_1);
 		
+		Font customFont = new Font("Arial", Font.BOLD, 14);
+
 		List listNames = new List();
 		listNames.setEnabled(false);
-		listNames.setBackground(Color.LIGHT_GRAY);
 		listNames.setBounds(145, 131, 358, 246);
+		listNames.setFont(customFont);
 		contentPane.add(listNames);
 		
 		JLabel label_1 = new JLabel("NAME");
@@ -107,32 +84,28 @@ public class SearchCommitmentsScreen extends JFrame {
 		label_1.setBounds(145, 98, 358, 27);
 		contentPane.add(label_1);
 		
-		List listCodes = new List();
-		listCodes.setBounds(499, 131, 147, 246);
-		contentPane.add(listCodes);
+		List listID = new List();
+		listID.setBounds(499, 131, 147, 246);
+		contentPane.add(listID);
 				
-		ArrayList<String> valores = new ArrayList<String>();
-		String tabela = "Commitments";
-		
+		ArrayList<Commitments> commitmentsList = new ArrayList<Commitments>();
+
 		try {
-			valores.addAll(Commitments.searchCommitments(tabela));
+			Commitments commitments = new Commitments();
+			commitmentsList.addAll(commitments.searchCommitments());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for(int i = 0; i < valores.size(); i++) {
-		
-				listNames.add(valores.get(i));
-				listCodes.add(valores.get(i+5));
-				
-			i += 5;
-		
+
+		for (Commitments commitment : commitmentsList) {
+			listNames.add(commitment.getName());	
+			listID.add(commitment.getId().toString());			
 		}
-		listCodes.addActionListener(new ActionListener() {
+		listID.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					code = listCodes.getSelectedItem();
-					ConsultCommitmentsScreen frame = new ConsultCommitmentsScreen();
+					Long id = Long.valueOf(listID.getSelectedItem());
+					ConsultCommitmentsScreen frame = new ConsultCommitmentsScreen(id);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -147,15 +120,9 @@ public class SearchCommitmentsScreen extends JFrame {
 		label_2.setBounds(499, 98, 147, 27);
 		contentPane.add(label_2);
 		
-		
-				
-			
-				JLabel label = new JLabel("");
-				label.setIcon(new ImageIcon(SearchCommitmentsScreen.class.getResource("/images/pontos-de-interroga\u00E7\u00E3o-coloridos-dos-bilhetes-escritos-fundo-lembretes-do-quadro-pe\u00E7a-ou-conceito-neg\u00F3cio-com-espa\u00E7o-da-111730210.jpg")));
-				label.setBounds(0, 69, 794, 345);
-				contentPane.add(label);
-		
-				
-	
+		JLabel label = new JLabel("");
+		label.setIcon(new ImageIcon(SearchCommitmentsScreen.class.getResource("/images/pontos-de-interroga\u00E7\u00E3o-coloridos-dos-bilhetes-escritos-fundo-lembretes-do-quadro-pe\u00E7a-ou-conceito-neg\u00F3cio-com-espa\u00E7o-da-111730210.jpg")));
+		label.setBounds(0, 69, 794, 345);
+		contentPane.add(label);
 	}
 }
